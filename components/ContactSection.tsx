@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {
@@ -34,6 +34,8 @@ const formSchema = z.object({
   message: z.string().min(10, 'Le message est trop court'),
 });
 
+type FormData = z.infer<typeof formSchema>;
+
 const faqs = [
   {
     question: 'Quels types de projets réalisez-vous ?',
@@ -45,7 +47,7 @@ const faqs = [
   },
   {
     question: 'Travaillez-vous partout à Madagascar ?',
-    answer: 'Oui, nous intervenons sur l&#39;ensemble du territoire malgache, avec une présence renforcée dans les grandes villes : Antananarivo, Toamasina, Mahajanga, etc.'
+    answer: 'Oui, nous intervenons sur l\'ensemble du territoire malgache, avec une présence renforcée dans les grandes villes : Antananarivo, Toamasina, Mahajanga, etc.'
   },
   {
     question: 'Proposez-vous des garanties ?',
@@ -59,11 +61,11 @@ export function ContactSection() {
     threshold: 0.1
   });
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(formSchema)
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const onSubmit: SubmitHandler<FormData> = (data) => {
     console.log(data);
     toast.success('Message envoyé avec succès !');
   };
@@ -96,7 +98,7 @@ export function ContactSection() {
                   placeholder="Votre nom"
                   className={errors.name ? 'border-red-500' : ''}
                 />
-                {errors.name && typeof errors.name.message === 'string' && (
+                {errors.name && (
                   <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
                 )}
               </div>
@@ -161,13 +163,13 @@ export function ContactSection() {
           >
             <div className="bg-white p-6 rounded-lg shadow-lg">
               <h3 className="text-xl font-bold text-primary mb-4">Informations de contact</h3>
-              
+
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <FiMapPin className="text-secondary" />
-                  <p>123 Avenue de l'Indépendance, Antananarivo 101, Madagascar</p>
+                  <p>123 Avenue de l&apos;Indépendance, Antananarivo 101, Madagascar</p>
                 </div>
-                
+
                 <div className="flex items-center gap-3">
                   <FiPhone className="text-secondary" />
                   <p>+261 20 22 123 456</p>
@@ -211,12 +213,13 @@ export function ContactSection() {
 
             <div className="h-64 rounded-lg overflow-hidden">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3774.214456529686!2d47.51686091489943!3d-18.91191998717!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x21f07de34a5c1943%3A0x6c386c1a6d87098!2sAntananarivo%2C%20Madagascar!5e0!3m2!1sfr!2sfr!4v1645789012345!5m2!1sfr!2sfr"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3774.214456529686!2d47.51686091489943!3d-18.911919987177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x21f07de34a5c1943%3A0x6c386c1a6d87098!2sAntananarivo%2C%20Madagascar!5e0!3m2!1sfr!2sfr!4v1645789012345!5m2!1sfr!2sfr"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
           </motion.div>
